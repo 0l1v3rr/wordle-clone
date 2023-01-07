@@ -6,6 +6,7 @@ import { FC } from "react";
 interface KeyboardProps {
   addLetter: (letter: string) => void;
   removeLastLetter: () => void;
+  enter: () => void;
 }
 
 const Keyboard: FC<KeyboardProps> = (props) => {
@@ -37,7 +38,7 @@ const Keyboard: FC<KeyboardProps> = (props) => {
       </div>
 
       <div className="flex gap-1">
-        <Enter />
+        <Enter enter={props.enter} />
         <Key letter="Z" addLetter={props.addLetter} state="default" />
         <Key letter="X" addLetter={props.addLetter} state="default" />
         <Key letter="C" addLetter={props.addLetter} state="default" />
