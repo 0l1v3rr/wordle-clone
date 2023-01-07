@@ -1,8 +1,15 @@
-const Backspace = () => {
+import { FC } from "react";
+
+interface BackspaceProps {
+  removeLastLetter: () => void;
+}
+
+const Backspace: FC<BackspaceProps> = (props) => {
   return (
     <button
+      onClick={() => props.removeLastLetter()}
       className="px-4 py-5 rounded-md text-wordle-text font-bold font-arial 
-      bg-wordle-btn text-[.8rem]"
+        bg-wordle-btn text-[.8rem]"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

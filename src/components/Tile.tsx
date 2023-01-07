@@ -1,7 +1,8 @@
 import { FC } from "react";
+import { LetterState } from "../App";
 
 interface TileProps {
-  state: "default" | "active" | "wrong" | "wrong-pos" | "correct";
+  state: LetterState;
   letter: string;
 }
 
