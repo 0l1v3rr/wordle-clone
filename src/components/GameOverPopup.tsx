@@ -5,6 +5,7 @@ interface GameOverPopupProps {
   isActive: boolean;
   close: () => void;
   currentWord: string;
+  state: "lost" | "won";
 }
 
 const GameOverPopup: FC<GameOverPopupProps> = (props) => {
@@ -20,14 +21,16 @@ const GameOverPopup: FC<GameOverPopupProps> = (props) => {
         className="text-lg text-wordle-text font-semibold uppercase 
           text-center border-b border-solid border-wordle-border px-6 py-2"
       >
-        Game Over
+        {props.state === "won" ? "Congratulations!" : "Game Over!"}
       </div>
 
       <div className="text-wordle-text px-6 py-4 border-b border-solid border-wordle-border">
+        {props.state === "won"
+          ? "You have successfully guessed the word!"
+          : "Better luck next time!"}
+        <br />
         The correct word was{" "}
         <span className="font-semibold">{props.currentWord}.</span>
-        <br />
-        Better luck next time!
       </div>
 
       <div className="px-6 py-4">

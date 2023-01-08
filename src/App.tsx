@@ -23,6 +23,7 @@ const getRandomWord = () =>
 
 const App = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isGameWon, setIsGameWon] = useState<boolean>(false);
 
   const [currentWord, setCurrentWord] = useState<string>(getRandomWord());
   const [letterCount, setLetterCount] = useState<number>(0);
@@ -37,6 +38,7 @@ const App = () => {
     setNextLetterIdx(0);
     setLetters(Array(30).fill({ letter: "", letterState: "default" }));
     setIsGameOver(false);
+    setIsGameWon(false);
   };
 
   const addLetter = useCallback(
@@ -64,7 +66,7 @@ const App = () => {
   );
 
   const removeLastLetter = useCallback((): void => {
-    if (letterCount === 0 || isGameOver || nextLetterIdx >= 30) return;
+    if (letterCount === 0 || isGameOver) return;
 
     setLetters((prev) => {
       const newArr = [...prev];
@@ -96,6 +98,31 @@ const App = () => {
     ];
 
     const word = currentLetters.join("").toLowerCase();
+
+    // the word is guessed
+    if (word === currentWord) {
+      setLetters((prev) => {
+        const newArr = [...prev];
+
+        newArr[nextLetterIdx - 1] = {
+          ...prev[nextLetterIdx - 1],
+          letterState: "default",
+        };
+
+        for (let i = 0; i < currentLetters.length; i++) {
+          newArr[nextLetterIdx - (5 - i)].letterState = "correct";
+        }
+
+        return newArr;
+      });
+
+      setTimeout(() => {
+        setIsGameOver(true);
+        setIsGameWon(true);
+      }, 500);
+      return;
+    }
+
     if (!dictionary.includes(word)) return;
 
     setLetterCount(0);
@@ -176,6 +203,7 @@ const App = () => {
         close={gameOver}
         currentWord={currentWord}
         isActive={isGameOver}
+        state={isGameWon ? "won" : "lost"}
       />
 
       <TileGrid letters={letters} />
