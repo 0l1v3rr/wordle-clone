@@ -41,9 +41,7 @@ const App = () => {
 
   const addLetter = useCallback(
     (letter: string): void => {
-      if (letterCount === 5 || isGameOver) return;
-
-      console.log("IDX", nextLetterIdx);
+      if (letterCount === 5 || isGameOver || nextLetterIdx >= 30) return;
 
       setLetters((prev) => {
         const newArr = [...prev];
@@ -66,7 +64,7 @@ const App = () => {
   );
 
   const removeLastLetter = useCallback((): void => {
-    if (letterCount === 0 || isGameOver) return;
+    if (letterCount === 0 || isGameOver || nextLetterIdx >= 30) return;
 
     setLetters((prev) => {
       const newArr = [...prev];
@@ -132,8 +130,6 @@ const App = () => {
 
       return newArr;
     });
-
-    console.log(nextLetterIdx);
 
     if (nextLetterIdx === 30) {
       setTimeout(() => {
