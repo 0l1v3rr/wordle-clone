@@ -15,8 +15,8 @@ const Tile: FC<TileProps> = ({ state, letter }) => {
         ${state === "wrong" ? "border-wordle-wrong bg-wordle-wrong" : ""}
         ${state === "wrong-pos" ? "border-wordle-yellow bg-wordle-yellow" : ""}
         ${state === "active" ? "border-wordle-btn bg-transparent" : ""}
-        w-12 h-12 border-2 border-solid flex items-center justify-center text-2xl 
-        text-wordle-text font-bold`}
+        w-14 h-14 border-2 border-solid flex items-center justify-center text-2xl 
+        text-wordle-text font-bold uppercase`}
     >
       {letter}
     </div>

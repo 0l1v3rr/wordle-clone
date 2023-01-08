@@ -1,6 +1,6 @@
 import Keyboard from "./components/Keyboard";
 import TileGrid from "./components/TileGrid";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dictionary from "./data/dictionary.json";
 import targetWords from "./data/targetWords.json";
 
@@ -16,36 +16,42 @@ export interface Letter {
   letterState: LetterState;
 }
 
+const getRandomWord = () =>
+  targetWords[Math.floor(Math.random() * targetWords.length)];
+
 const App = () => {
-  const [currentWord, setCurrentWord] = useState<string>("apple");
+  const [currentWord, setCurrentWord] = useState<string>(getRandomWord());
   const [letterCount, setLetterCount] = useState<number>(0);
   const [nextLetterIdx, setNextLetterIdx] = useState<number>(0);
   const [letters, setLetters] = useState<Letter[]>(
     Array(30).fill({ letter: "", letterState: "default" })
   );
 
-  const addLetter = (letter: string): void => {
-    if (letterCount === 5) return;
+  const addLetter = useCallback(
+    (letter: string): void => {
+      if (letterCount === 5) return;
 
-    setLetters((prev) => {
-      const newArr = [...prev];
-      newArr[nextLetterIdx] = { letter: letter, letterState: "active" };
+      setLetters((prev) => {
+        const newArr = [...prev];
+        newArr[nextLetterIdx] = { letter: letter, letterState: "active" };
 
-      if (letterCount !== 0) {
-        newArr[nextLetterIdx - 1] = {
-          ...prev[nextLetterIdx - 1],
-          letterState: "default",
-        };
-      }
+        if (letterCount !== 0) {
+          newArr[nextLetterIdx - 1] = {
+            ...prev[nextLetterIdx - 1],
+            letterState: "default",
+          };
+        }
 
-      setNextLetterIdx((prev) => prev + 1);
-      setLetterCount((prev) => prev + 1);
+        setNextLetterIdx((prev) => prev + 1);
+        setLetterCount((prev) => prev + 1);
 
-      return newArr;
-    });
-  };
+        return newArr;
+      });
+    },
+    [letterCount, nextLetterIdx]
+  );
 
-  const removeLastLetter = (): void => {
+  const removeLastLetter = useCallback((): void => {
     if (letterCount === 0) return;
 
     setLetters((prev) => {
@@ -64,9 +70,9 @@ const App = () => {
 
       return newArr;
     });
-  };
+  }, [nextLetterIdx, letterCount]);
 
-  const enter = () => {
+  const enter = useCallback(() => {
     if (letterCount !== 5) return;
 
     const currentLetters = [
@@ -106,12 +112,40 @@ const App = () => {
 
       return newArr;
     });
-  };
+  }, [currentWord, letterCount, letters, nextLetterIdx]);
+
+  const handleKeyPress = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.isComposing || e.repeat) return;
+
+      const regex = /^[a-zA-Z]$/;
+      if (regex.test(e.key)) {
+        addLetter(e.key.toUpperCase());
+        return;
+      }
+
+      if (e.key === "Enter") {
+        enter();
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        removeLastLetter();
+      }
+    },
+    [addLetter, enter, removeLastLetter]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, [handleKeyPress]);
 
   return (
     <div
       className="bg-wordle-bg min-h-screen w-full flex flex-col px-10 
-        py-4 items-center gap-10 justify-center"
+        py-4 items-center gap-6 justify-center"
     >
       <TileGrid letters={letters} />
       <Keyboard

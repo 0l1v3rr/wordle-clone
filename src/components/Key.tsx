@@ -16,7 +16,7 @@ const Key: FC<KeyProps> = (props) => {
         ${props.state === "wrong" ? "bg-wordle-wrong" : ""} 
         ${props.state === "wrong-pos" ? "bg-wordle-yellow" : ""} 
         ${props.state === "default" ? "bg-wordle-btn" : ""} 
-        px-4 py-5 rounded-md text-wordle-text font-bold font-arial 
+        px-3 py-4 rounded-md text-wordle-text font-bold font-arial 
         text-sm transition-all duration-300`}
     >
       {props.letter}

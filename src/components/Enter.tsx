@@ -8,8 +8,8 @@ const Enter: FC<EnterProps> = (props) => {
   return (
     <button
       onClick={() => props.enter()}
-      className="px-3 py-5 rounded-md text-wordle-text font-bold font-arial 
-      bg-wordle-btn text-[.8rem]"
+      className="px-2 py-4 rounded-md text-wordle-text font-bold font-arial 
+      bg-wordle-btn text-[.75rem]"
     >
       ENTER
     </button>
