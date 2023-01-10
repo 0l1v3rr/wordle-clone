@@ -32,6 +32,51 @@ const App = () => {
     Array(30).fill({ letter: "", letterState: "default" })
   );
 
+  const getUniqueLetters = useCallback((): [Letter[], Letter[], Letter[]] => {
+    const convertToLetterArray = (s: string): Letter[] => {
+      const pieces = s.split("");
+      const res: Letter[] = pieces.map((letter) => {
+        return {
+          letter: letter,
+          letterState: "default",
+        } satisfies Letter;
+      });
+
+      for (const l of letters) {
+        if (pieces.includes(l.letter)) {
+          const idx = pieces.indexOf(l.letter);
+          const { letterState } = l;
+          const { letterState: resLetterState } = res[idx];
+
+          if (letterState === "active") continue;
+
+          switch (resLetterState) {
+            case "default":
+              res[idx] = { ...l };
+              break;
+            case "wrong-pos":
+              if (letterState === "correct") {
+                res[idx] = { ...l };
+              }
+              break;
+            case "wrong":
+              if (letterState === "correct" || letterState === "wrong-pos") {
+                res[idx] = { ...l };
+              }
+              break;
+          }
+        }
+      }
+
+      return res;
+    };
+
+    const lineOne = convertToLetterArray("QWERTYUIOP");
+    const lineTwo = convertToLetterArray("ASDFGHJKL");
+    const lineThree = convertToLetterArray("ZXCVBNM");
+    return [lineOne, lineTwo, lineThree];
+  }, [letters]);
+
   const gameOver = () => {
     setCurrentWord(getRandomWord());
     setLetterCount(0);
@@ -211,6 +256,7 @@ const App = () => {
         addLetter={addLetter}
         removeLastLetter={removeLastLetter}
         enter={enter}
+        letters={getUniqueLetters()}
       />
     </div>
   );
