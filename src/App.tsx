@@ -5,6 +5,7 @@ import dictionary from "./data/dictionary.json";
 import targetWords from "./data/targetWords.json";
 import GameOverPopup from "./components/GameOverPopup";
 import BlurOverlay from "./components/BlurOverlay";
+import NotInWordList from "./components/NotInWordList";
 
 export type LetterState =
   | "default"
@@ -24,6 +25,7 @@ const getRandomWord = () =>
 const App = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
+  const [isWrongWord, setIsWrongWord] = useState<boolean>(false);
 
   const [currentWord, setCurrentWord] = useState<string>(getRandomWord());
   const [letterCount, setLetterCount] = useState<number>(0);
@@ -168,7 +170,11 @@ const App = () => {
       return;
     }
 
-    if (!dictionary.includes(word)) return;
+    if (!dictionary.includes(word)) {
+      setIsWrongWord(true);
+      setTimeout(() => setIsWrongWord(false), 2000);
+      return;
+    }
 
     setLetterCount(0);
 
@@ -243,6 +249,7 @@ const App = () => {
       className="bg-wordle-bg min-h-screen w-full flex flex-col px-10 
         py-4 items-center gap-6 justify-center"
     >
+      <NotInWordList isActive={isWrongWord} />
       <BlurOverlay isActive={isGameOver} />
       <GameOverPopup
         close={gameOver}
